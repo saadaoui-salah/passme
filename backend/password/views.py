@@ -3,20 +3,21 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import PasswordSerializer
-from .models import Passwords
-from django.contrib.auth.models import User
-
+from .models import Password
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from django.db.utils import IntegrityError
 class PasswordApiView(APIView):
     
     def get_object(self, id):
         try: 
-            return Passwords.objects.get(id=id)
-        except Passwords.DoesNotExist:
+            return Password.objects.get(id=id)
+        except Password.DoesNotExist:
             return Response({"error": "not found"})
 
     def get(self, request):
         if request.user.is_authenticated:
-            passwords = Passwords.objects.all().order_by('date')
+            passwords = Password.objects.all().order_by('date')
             serializer = PasswordSerializer(passwords, many=True)
             return Response(serializer.data)
         return Response({"success": False, 'error':'not authenticated'})
@@ -37,8 +38,8 @@ class PasswordDetailsApiView(APIView):
     
     def get_object(self, id):
         try: 
-            return Passwords.objects.get(id=id)
-        except Passwords.DoesNotExist:
+            return Password.objects.get(id=id)
+        except Password.DoesNotExist:
             return Response({"error": "not found"})
 
     def delete(self, request, id):
@@ -69,8 +70,14 @@ class PasswordDetailsApiView(APIView):
 class AuthApiView(APIView):
     
     def post(self, request):
-        admin = User.objects.filter(username='root')
-        print(request.data)
-        if request.data['password'] == admin.password:
-            return Response({"success":True, 'token':token})
-        return Response({"success":False, 'error':'not authenticated'})
+        if request.data['pwd']:
+            user = authenticate(username='root', password=request.data['pwd'])
+            if user is not None:
+                try:
+                    token = Token.objects.create(user=user)
+                except IntegrityError:
+                    token = Token.objects.filter(user=user)
+                    token = list(token.values())[0]['key']
+                return Response({"success":True, 'token':token})
+            return Response({"success":False, 'error':'user not authenticated'})
+        return Response({"success":False, 'error':'pwd not found'})
