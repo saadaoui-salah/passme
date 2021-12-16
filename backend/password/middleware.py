@@ -14,16 +14,15 @@ class IsAuthenticatedMiddleware:
             token_ = list(Token.objects.filter(user=user).values())[0]['key']
             if token == token_:
                 return True, user
-        raise ValidationError("Token not validated")
+        return False, None
     def __call__(self, request, *args, **kwargs):
-        try:
+        url = request.get_full_path()
+        if url == '/api/auth':
+            return self.get_response(request)
+        else:
             token = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
             validated, user = self.validate(token)
             request.user = user
             request.is_authenticated = validated
             response = self.get_response(request)
             return response
-        except ValidationError:
-            return Response({'error':'not authorized'})
-        except KeyError:
-            return Response({'error':'Token not found'})

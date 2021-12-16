@@ -1,12 +1,28 @@
 import axios from 'axios'
-import { useState } from 'react'
-
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../App';
 
 export const Login = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token')
+    useEffect(() => {
+        if (token !== null && token !== 'null'){
+            navigate("/")
+            console.log(token)
+        }
+
+    }, [token])
     const [password, setPassword] = useState()
+    const { dispatch} = useContext(AuthContext)
     const onClick = async () => {
         const res = await axios.post("http://127.0.0.1:8000/api/auth", {'pwd':password})
-        localStorage.setItem('token', res.data.token)
+        if (res.data.success){
+            document.getElementsByName('password').value = ""
+            localStorage.setItem('token', res.data.token)
+            dispatch('login')
+            navigate('/');
+        }
     }
     const onChange = (e) => {
         setPassword(e.target.value)
