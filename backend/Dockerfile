@@ -8,6 +8,8 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+ENV PORT=8000
 
-CMD ["python3", "manage.py", "runserver", "--bind", "0.0.0.0:8000"]
+EXPOSE ${PORT}
+
+RUN gunicorn core.wsgi:application --bind 0.0.0.0:${PORT}
