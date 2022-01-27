@@ -18,9 +18,8 @@ class IsAuthenticatedMiddleware:
 
     def __call__(self, request, *args, **kwargs):
         url = request.get_full_path()
-        print(url[0:5])
         if url[0:5] == '/api/':
-            if url == '/api/auth/':
+            if url == '/api/auth/' or url == '/api/healthy/':
                 return self.get_response(request)
             token = request.META['HTTP_AUTHORIZATION'].split(" ")[1]
             validated, user = self.validate(token)

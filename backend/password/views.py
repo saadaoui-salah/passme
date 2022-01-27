@@ -27,8 +27,6 @@ class PasswordApiView(APIView):
             return Response(serializer.data)
         return Response({"success": False, 'error':'not authenticated'})
     
-
-    
     def post(self, request):
         if request.user.is_authenticated:
             serializer = PasswordSerializer(data=request.data)
@@ -88,3 +86,8 @@ class AuthApiView(APIView):
                 return Response({"success":True, 'token':token})
             return Response({"success":False, 'error':'user not authenticated'})
         return Response({"success":False, 'error':'pwd not found'})
+
+
+class HealthyApiView(APIView):
+    def get(self, request):
+        return Response({'HEALTHY': 'GOOD'})
