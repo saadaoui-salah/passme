@@ -21,21 +21,3 @@ jobs:
           heroku_email: ${{ secrets.EMAIL }}
           appdir: "backend"
           usedocker : true
-          docker_build_args: |
-            SECRET_KEY
-            ENV
-            PORT
-            HOST
-            NAME
-            USER
-            DB_PORT
-            PASSWORD
-        env:
-          HD_SECRET_KEY: ${{secrets.SECRET_KEY}}
-          HD_ENV: prod
-          HD_PORT: 8000
-          HD_HOST: ${{secrets.HOST}}
-          HD_NAME: ${{secrets.NAME}}
-          HD_USER: ${{secrets.USER}}
-          HD_DB_PORT: 5432
-          HD_PASSWORD: ${{secrets.PASSWORD}}
