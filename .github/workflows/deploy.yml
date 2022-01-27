@@ -17,7 +17,7 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "pass-me"
+          heroku_app_name: "passme-api"
           heroku_email: ${{ secrets.EMAIL }}
           usedocker : true
           docker_build_args: |
@@ -30,11 +30,11 @@ jobs:
             DB_PORT
             PASSWORD
         env:
-          SECRET_KEY: ${{secrets.SECRET_KEY}}
-          ENV: prod
-          PORT: 8000
-          HOST: ${{secrets.HOST}}
-          NAME: ${{secrets.NAME}}
-          USER: ${{secrets.USER}}
-          DB_PORT: ${{secrets.DB_PORT}}
-          PASSWORD: ${{secrets.PASSWORD}}
+          HD_SECRET_KEY: ${{secrets.SECRET_KEY}}
+          HD_ENV: prod
+          HD_PORT: 8000
+          HD_HOST: ${{secrets.HOST}}
+          HD_NAME: ${{secrets.NAME}}
+          HD_USER: ${{secrets.USER}}
+          HD_DB_PORT: 5432
+          HD_PASSWORD: ${{secrets.PASSWORD}}
