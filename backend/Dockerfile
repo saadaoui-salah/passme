@@ -20,4 +20,4 @@ ENV PASSWORD=8b9d9f701307a6df33fd5823559ec6997d1c56c4d9113062c76b961fa721b1a2
 
 EXPOSE ${PORT}
 
-RUN gunicorn core.wsgi:application --bind 0.0.0.0:${PORT}
+RUN gunicorn core.wsgi:application --bind 0.0.0.0:8000
