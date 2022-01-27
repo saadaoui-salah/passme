@@ -1,0 +1,41 @@
+name: deploy
+on: 
+  push:
+    branch:
+      - master
+
+defaults:
+  run:
+    shell: bash
+    working-directory: backend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "passme-api"
+          heroku_email: ${{ secrets.EMAIL }}
+          appdir: "backend"
+          usedocker : true
+          docker_build_args: |
+            SECRET_KEY
+            ENV
+            PORT
+            HOST
+            NAME
+            USER
+            DB_PORT
+            PASSWORD
+        env:
+          HD_SECRET_KEY: ${{secrets.SECRET_KEY}}
+          HD_ENV: prod
+          HD_PORT: 8000
+          HD_HOST: ${{secrets.HOST}}
+          HD_NAME: ${{secrets.NAME}}
+          HD_USER: ${{secrets.USER}}
+          HD_DB_PORT: 5432
+          HD_PASSWORD: ${{secrets.PASSWORD}}
